@@ -1,12 +1,246 @@
+
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-</hed>
-<body>
-<H2>�Č����o��</H2>
-<H2>�w�E���ۂ̊m�F</H2>
-<h3>�����p�A�J�E���g�擾</h3>
-<h3></h3>
+    <head>
+        <title>CheckList</title>
+    </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <body>
+        <div>
+            <div class="item">
+                <input id="prevent_mis" type=checkbox checked />Prevent closing
+            </div>
+            <div class="item">
+                <H2>Decide what to work on in the list of KINT.</H2>
+                <div class="basic_info">
+                    <input class="path" type="text" id="kint_p">
+                </div>
+            </div>
+            <div class="item">
+                <h2>Collect the basic information of claim.</h2>
+                <div class="basic_info">
+                    <input class="the_name" id="sch" placeholder="School" />
+                    <input class="the_name" id="cit" placeholder="City" />
+                    <input class="desc" id="claim" placeholder="Claim" />
+                </div>
+                <div class="basic_info">
+                    <h3>Prepare directories for this claim.</h3>
 
-<H2></H2>
-</body>
+                    <input type="button" id="btn_mkdir" value="mkdir" />
+                    <div><textarea id="mkdir"    readonly></textarea></div>
+                    <div><textarea id="explorer" readonly></textarea></div>
+
+                </div>
+            </div>
+            <a href="file://c:/">XX</a>
+            <div class="item">
+                <H2>Recognize the essence of claim and make it happen again.</H2>
+            </div>
+        </div>
+        <div>
+            <h3>Take a photo</h3>
+            <h4>破損個所</h4>
+            <div class="grid">
+                <div class="item preview"> <img/><a download="破損個所.jpg" >Download</a> </div>
+                <div class="item preview"> <img /><a download="破損個所1.jpg" >Download</a> </div>
+                <div class="item preview"><img /><a download="破損個所2.jpg" >Download</a> </div>
+                <div class="item preview"><img  /><a download="破損個所3.jpg" >Download</a> </div>
+            </div>
+            <h4>リース</h4>
+            <div class="grid">
+                <div class="preview"><img /><a download="リース情報.jpg" >Download</a> </div>
+            </div>
+            <h4>製造番号</h4>
+            <div class="grid">
+                <div class="preview"><img /><a download="製造番号.jpg" >Download</a></div>
+                <div class="preview"><img /><a download="製造番号2.jpg" >Download</a> </div>
+            </div>
+            <h4>表面と背面</h4>
+            <div class="grid">
+                <div class="preview"><img /><a download="表面.jpg">Download</a> </div>
+                <div class="preview"><img /><a download="背面.jpg">Download</a> </div>
+            </div>
+        </div>
+
+        <div class="item">
+            <div class="basic_info">
+                <textarea class="the_path" id="photo_dir"></textarea>
+            </div>
+        </div>
+        <div class="item">
+            <h3>Get the account for testing.</h3>
+        </div>
+        <div class="item">
+            <h3>Test</h3>
+        </div>
+        <div class="item">
+            <h3>Report</h3>
+        </div>
+        </div>
+
+
+        <H2></H2>
+
+        <a href="https://www.google.com">google</a>
+    </body>
+
+    <style>
+
+
+.grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 1rem;
+}
+
+div.item {
+}
+
+div.preview {
+    height: 10rem;
+    width: 10rem;
+    max-width: 50rem;
+    border: 2px dashed #ccc;
+}
+
+    div.preview img {
+           max-width: 100%;
+           height: auto;
+    }
+
+
+    .basic_info button
+        , .basic_info input[type=button]
+    {
+        margin: 0.4rem 0.25rem;
+    }
+
+    .basic_info .the_name {
+        width: auto;
+        min-width: 20rem;
+        margin: 0.4rem 0.25rem;
+    }
+    .basic_info .desc {
+        min-width: 50rem;
+        margin: 0.4rem 0.25rem;
+    }
+    .basic_info .path {
+        min-width: 50rem;
+        margin: 0.4rem 0.25rem;
+    }
+
+    .basic_info textarea {
+        width: auto;
+        min-width: 50rem;
+        margin: 0.5rem 0.25rem;
+        min-height: 3rem;
+    }
+
+
+    input[type=text].path {
+        min-width: 50rem;
+        max-width: 90%;
+    }
+
+
+
+    </style>
+
+    <script defer>
+
+        function get_stored_path(nm) {
+            return "\\\\localhost\\export_sandbox\\・岡崎";
+
+        }
+
+        $(window).on('beforeunload', function(e) {
+            console.log('before!!!');
+            if ($('input#prevent_mis').is(':checked')) {
+                console.log($('input#prevent_mis').is(':checked'));
+                var tx = 'Really3?';
+                e.returnValue = tx;
+                return tx;
+            } 
+        });
+
+        $("#btn_mkdir").on('click', function(e) {
+            console.log( $("#sch").val() );
+
+            var sch = $("#sch").val();
+
+            var path = `"${get_stored_path(sch)}\\${sch}"`;
+
+            $("#mkdir").html("mkdir " + path);
+            $("#explorer").html("explorer " + path);
+            $("#photo_dir").val( path );
+        });
+
+        $(".preview").on('dragover', function(e) {
+            e.preventDefault();
+        });
+        /*
+        $(".preview").on('drop', function(e) {
+            e.preventDefault();
+            var files = e.dataTransfer.files;
+            if (files.length === 1 && files[0].type.startsWith('image/')) {
+                var ff = files[0];
+
+                var read = new FileReader();
+                read.onload = function(e) {
+                    console.log(this);
+                }
+
+            }
+
+        });
+        */
+
+/*
+        const imgE = $("img#imgE");
+        */
+
+//        var imgE = document.getElementById('imgE');
+
+        Object.values(document.getElementsByClassName("preview")).forEach( function(ii) {
+            ii.addEventListener( "drop", function(e) {
+
+                //console.log(e);
+
+console.log(e.srcElement.querySelectorAll("img"));
+                var lst = e.srcElement.querySelectorAll("img");
+                var imgE;
+                if (lst.length === 1) {
+                    imgE = lst[0];
+                }
+
+                var lst2 = e.srcElement.querySelectorAll("a");
+                var anc;
+                if (lst2.length === 1) {
+                    anc = lst2[0];
+                }
+
+                e.preventDefault();
+                var files = e.dataTransfer.files;
+                console.log(files);
+                if (files.length === 1 && files[0].type.startsWith('image/')) {
+                console.log('A');
+                    var ff = files[0];
+
+                    var rd = new FileReader();
+                    rd.onload = function(e) {
+                        imgE.src = e.target.result;
+                        imgE.style.display = 'block';
+
+                        anc.href = URL.createObjectURL(ff);
+
+                    }
+                    rd.readAsDataURL(ff);
+                }
+            })
+        })
+
+
+    </script>
+</html>
