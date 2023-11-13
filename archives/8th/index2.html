@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fetch Data from Server</title>
+</head>
+<body>
+    <button id="fetchButton">Fetch Data</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById("fetchButton").addEventListener("click", function () {
+            fetch('/data', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display the fetched data on the web page
+                document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

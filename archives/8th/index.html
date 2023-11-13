@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send JSON Data</title>
+</head>
+<body>
+    <button id="sendButton">Send JSON Data</button>
+    <a href="index2.html">Next</a>
+
+    <script>
+        document.getElementById("sendButton").addEventListener("click", function () {
+            // JSON data to send
+            var jsonData = {
+                key: "your_key",
+                data: "your_data"
+            };
+
+            //fetch('/receive-json/your_key', {
+            fetch('/receive-json', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // Output the response from the server
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

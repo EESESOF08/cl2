@@ -1,0 +1,33 @@
+using System;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Http;
+
+public class JsonController : ApiController
+{
+    [HttpPost]
+    [Route("receive-json/" + key)]
+    public IHttpActionResult ReceiveJson(string key)
+    {
+        try
+        {
+            string json = Request.Content.ReadAsStringAsync().Result;
+
+            // You can use the 'key' variable here to identify the specific request.
+            // For example, you can save the JSON data to a file named using the 'key'.
+            //string fileName = $"received_{key}.json";
+	    string filename = "received_" + key + ".json";
+
+            File.WriteAllText(fileName, json);
+
+            //return Ok($"JSON data received and saved as {fileName}");
+            return Ok("JSON data received and saved as " + fileName);
+        }
+        catch (Exception ex)
+        {
+            return InternalServerError(ex);
+        }
+    }
+}
