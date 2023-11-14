@@ -60,6 +60,18 @@ class Program
                 response.OutputStream.Write(buffer, 0, buffer.Length);
                 response.Close();
             }
+
+            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/script.js")
+            {
+                // Serve a sample HTML file for GET requests to the root path
+                string html = File.ReadAllText("script.js");
+
+                byte[] buffer = Encoding.UTF8.GetBytes(html);
+                response.ContentLength64 = buffer.Length;
+                response.ContentType = "text/html";
+                response.OutputStream.Write(buffer, 0, buffer.Length);
+                response.Close();
+            }
             else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/data")
             {
                 // Handle GET requests at /data and respond with JSON data
