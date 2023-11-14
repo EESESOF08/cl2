@@ -72,11 +72,25 @@ class Program
                 response.OutputStream.Write(buffer, 0, buffer.Length);
                 response.Close();
             }
-            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/data")
+            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/datax")
             {
                 // Handle GET requests at /data and respond with JSON data
                 string jsonData = "{\"message\": \"Hello from the server!\"}";
                 byte[] buffer = Encoding.UTF8.GetBytes(jsonData);
+
+                response.ContentType = "application/json";
+                response.ContentLength64 = buffer.Length;
+                response.OutputStream.Write(buffer, 0, buffer.Length);
+                response.Close();
+            }
+						else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/data")
+            {
+                // Handle GET requests at /data and respond with JSON data from the "retrieved.json" file
+                string jsonData = File.ReadAllText("received.json");
+                Console.WriteLine("jsonData:");
+                Console.WriteLine(jsonData);
+                byte[] buffer = Encoding.UTF8.GetBytes(jsonData);
+
 
                 response.ContentType = "application/json";
                 response.ContentLength64 = buffer.Length;
