@@ -1,0 +1,170 @@
+head	1.1;
+access;
+symbols;
+locks
+	xsmar:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2023.11.12.08.23.31;	author xsmar;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@    function get_stored_path(nm) {
+            return "\\\\localhost\\export_sandbox\\・岡崎";
+
+        }
+
+        $(window).on('beforeunload', function(e) {
+            console.log('before!!!');
+            if ($('input#prevent_mis').is(':checked')) {
+                console.log($('input#prevent_mis').is(':checked'));
+                var tx = 'Really3?';
+                e.returnValue = tx;
+                return tx;
+            } 
+        });
+
+        $("#btn_mkdir").on('click', function(e) {
+            console.log( $("#sch").val() );
+
+            var sch = $("#sch").val();
+
+            var path = `"${get_stored_path(sch)}\\${sch}"`;
+
+            $("#mkdir").html("mkdir " + path);
+            $("#explorer").html("explorer " + path);
+            $("#photo_dir").val( path );
+        });
+
+        $(".preview").on('dragover', function(e) {
+            e.preventDefault();
+        });
+        /*
+        $(".preview").on('drop', function(e) {
+            e.preventDefault();
+            var files = e.dataTransfer.files;
+            if (files.length === 1 && files[0].type.startsWith('image/')) {
+                var ff = files[0];
+
+                var read = new FileReader();
+                read.onload = function(e) {
+                    console.log(this);
+                }
+
+            }
+
+        });
+        */
+
+
+//        var imgE = document.getElementById('imgE');
+
+        Object.values(document.getElementsByClassName("preview")).forEach( function(ii) {
+            ii.addEventListener( "drop", function(e) {
+
+                //console.log(e);
+
+console.log(e.srcElement.querySelectorAll("img"));
+                var lst = e.srcElement.querySelectorAll("img");
+                var imgE;
+                if (lst.length === 1) {
+                    imgE = lst[0];
+                }
+
+                var lst2 = e.srcElement.querySelectorAll("a");
+                var anc;
+                if (lst2.length === 1) {
+                    anc = lst2[0];
+                }
+
+                e.preventDefault();
+                var files = e.dataTransfer.files;
+                console.log(files);
+                if (files.length === 1 && files[0].type.startsWith('image/')) {
+                console.log('A');
+                    var ff = files[0];
+
+                    var rd = new FileReader();
+                    rd.onload = function(e) {
+                        imgE.src = e.target.result;
+                        imgE.style.display = 'block';
+
+                        anc.href = URL.createObjectURL(ff);
+
+                    }
+                    rd.readAsDataURL(ff);
+                }
+            })
+        });
+
+async function postData(data = {}) {
+  /*
+    data = { "cla" : "1111", "id" : "222" };
+    const res = await fetch("/archive", {
+      method: "POST",
+      mode: "cors", 
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers:  { "Content-Type": "application/json" }, 
+      body: JSON.stringify(data)
+    });
+    
+    return res.json();
+    */
+
+}
+
+async function postDataA() {
+
+  // Data to be sent
+  const data = {
+      name: "John Doe",
+      email: "john@@example.com"
+  };
+  
+  // Create the request using the Fetch API
+  fetch('/archive', {
+      method: 'POST', // or 'PUT' if you're updating data
+      headers: {
+          'Content-Type': 'application/json',
+        'credentials': 'same-origin'
+      },
+      body: JSON.stringify(data),
+  })
+  .then(response => response.json())  // Converting the response to JSON
+  .then(data => {
+      console.log('Success:', data);  // Handling the success response
+  })
+  .catch((error) => {
+      console.error('Error:', error);  // Handling errors
+  });
+
+}
+
+$(document).ready((event) => {
+
+  $('#save_me').on('click', (event) => {
+    event.preventDefault();
+    const ff = $('#area_for_editing').get()[0];
+    const form_data = new FormData(ff);
+    //console.log(Object.fromEntries(form_data));
+    postDataA(form_data).then( (data) => {
+      console.log(data);
+    });
+  });
+
+});
+
+@
