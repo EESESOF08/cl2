@@ -1,13 +1,23 @@
 $(document).ready((event) => {
-  $("#sendButton").on("click", function(ee) {
+  $("#save").on("click", function(ee) {
     ee.preventDefault();
-    const form_area = $('#area_for_editing').get()[0];
+    const form_area = $('#for_editing').get()[0];
     const form_data = new FormData(form_area);
     const data      = Object.fromEntries(form_data);
 
-    fetch('/receive-json', {
+    console.log(data);
+
+    var nn = document.getElementById('managedNumber').value;
+    var dt = document.getElementById('date').value;
+    console.log(`number:{nn} date:{dt}`);
+
+    const query_string = (new URLSearchParams({ "number" : nn, "date" : dt })).toString();
+    const fetch_url    = `/save?${query_string}`;
+    alert(fetch_url);
+
+    fetch(fetch_url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json: charset=utf-8'  },
       body: JSON.stringify(data) 
     })
     .then(response => response.text())
@@ -18,11 +28,19 @@ $(document).ready((event) => {
       console.error('Err:', error);
     });
   });
-  $("#getButton").on("click", function(ee) {
+
+  $("#restore").on("click", function(ee) {
     ee.preventDefault();
-    fetch('/data', {
+    var nn = document.getElementById('managedNumber').value;
+    var dt = document.getElementById('date').value;
+    const query_string = (new URLSearchParams({ "number" : nn, "date" : dt })).toString();
+
+	  var fetch_url = `/restore?${query_string}`;
+    console.log(fetch_url);
+
+	  fetch(fetch_url, {
       method: "GET",
-      headers: { 'Content-Type' : 'application/json' }
+      headers: { 'Content-Type' : 'application/json: charset=utf-8' }
     })
     .then(res => {
       console.log("RES");
@@ -49,5 +67,23 @@ $(document).ready((event) => {
       console.error(`Fetch Error: ${err}`);
     });
   });
+
+  $("#set_today").on("click", function(ee) {
+    ee.preventDefault();
+    $("#timestamp").val(datestring());
+
+  });
+  $("#set_today2").on("click", function(ee) {
+    ee.preventDefault();
+    $("#date").val(datestring());
+  });
+
+  function datestring() {
+    const date = new Date();
+    const str =  new Intl.DateTimeFormat('en-US',
+     { month: '2-digit', day: '2-digit', year: 'numeric'}).format(date).replaceAll('/', '');
+    return str;
+  }
+
 });
 

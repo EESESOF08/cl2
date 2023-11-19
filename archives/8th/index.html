@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
+    <meta charset="utf-8" >
     <title>CheckList</title>
   </head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
@@ -10,12 +11,18 @@
   <body>
     <div>
       <h2>command:</h2>
-      <button id="sendButton">Send</button>
-      <button id="getButton">Get</button>
+      <button id="save">Save</button>
+      <div>
+	      <input id="managedNumber" placeholder="Managed Number" />
+        <input id="date"          placeholder="Date String" /><button id="set_today2" >Today</button>
+      </div>
+
+      <button id="restore">Restore</button>
+      </div>
     </div>
     <div>
-      <form action="/" id="area_for_editing" method="POST" >
-      <input type="submit" name="save" id="save_me" value="Save" />
+      <form action="/" id="for_editing" method="POST" >
+      <input type="submit" name="save" id="save_me" value="submit" />
         <div>
           <input id="timestamp" name="timestamp" />
           <button id="set_today" >Today</button>
@@ -31,31 +38,38 @@
         </div>
         <div class="item">
           <h2>Collect the basic information of claim.</h2>
+          <div>
+            <input class="the_name" name="url"  id="url" placeholder="URL" />
+          </div>
+
           <h3>On kint</h3>
           <div class="basic_info">
-            <input class="the_name" name="sch"  id="sch" placeholder="School" />
+            <input class="the_name" name="org"  id="org" placeholder="Orgnization" />
             <input class="the_name" name="cit"  id="cit" placeholder="City" />
             <input class="the_name" name="sno"  id="sno" placeholder="Serial" />
             <input class="desc"     name="cla"  id="cla" placeholder="Claim":q!
           </div>
+
           <h3>On the incident</h3>
           <div class="basic_info">
-            <input class="the_name" name="sch_i" id="sch_i" placeholder="School" />
+            <input class="the_name" name="org_i" id="org_i" placeholder="Orgnization" />
             <input class="the_name" name="cit_i" id="cit_i" placeholder="City" />
-            <input class="the_name" name="sch_i" id="sno_i" placeholder="Serial" />
-            <input class="the_name" name="sch_i" id="mac_i" placeholder="Mac" />
+            <input class="the_name" name="ser_i" id="sno_i" placeholder="Serial" />
+            <input class="the_name" name="mac_i" id="mac_i" placeholder="Mac" />
             <input class="desc"     name="cla_i" id="cla_i" placeholder="Claim" />
             <input class="the_name" name="inc_i" id="inc_i" placeholder="Incident" required minlength=1 />
             <button id="load_data" >Load</button>
           </div>
+
           <h3>On Machine</h3>
           <div class="basic_info">
-            <input class="the_name" name="sch_p" id="sch_p" placeholder="School" />
+            <input class="the_name" name="org_p" id="org_p" placeholder="Orgnization" />
             <input class="the_name" name="cit_p" id="cit_p" placeholder="City" />
-            <input class="the_name" name="sch_p" id="sno_p" placeholder="Serial" />
-            <input class="the_name" name="sch_p" id="mac_p" placeholder="Mac" />
+            <input class="the_name" name="ser_p" id="ser_p" placeholder="Serial" />
+            <input class="the_name" name="mac_p" id="mac_p" placeholder="Mac" />
             <input class="desc"     name="cla_p" id="cla_p" placeholder="Claim" />
           </div>
+
           <div class="basic_info">
             <h3>Prepare directories for this claim.</h3>
 
@@ -68,6 +82,10 @@
         <div class="item">
           <H2>Recognize the essence of claim and make it happen again.</H2>
         </div>
+        <div>
+          <textarea placehodler="memo2" ></textarea>
+        </div>
+
     </div>
     <div>
       <h3>Take a photo</h3>
@@ -120,8 +138,7 @@
 
       <p>SendData:<br>
       <textarea id="senddata"></textarea>
-      </p>
-  </body>
+      </p> </body>
 
 
 </html>

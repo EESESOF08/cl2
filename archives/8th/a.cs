@@ -3,107 +3,158 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 class Program
 {
+    static Hashtable contentTypes = new Hashtable {
+            { ".html", "text/html" }, { ".js", "text/javascript" }, { ".css", "text/css" },
+            { ".pdf", "application/pdf" }, { ".xlsx", "application/vnd.ms-execl" },
+            { ".jpg", "image/jpeg" }, { ".png", "image/png" }, { ".zip", "application/zip" },
+            { ".ico", "mage/vnd.microsoft.icon" }, { ".mp4", "video/mp4" }
+    };
+
     public static void Main(string[] args)
     {
         string url = "http://localhost:8080"; // Change the URL as needed
         HttpListener listener = new HttpListener();
         listener.Prefixes.Add(url + "/");
         listener.Start();
-        Console.WriteLine("Listening for incoming requests...");
+        Console.WriteLine("Listening for incoming requests..." + url);
 
         while (true)
         {
-            HttpListenerContext context = listener.GetContext();
-            HttpListenerRequest request = context.Request;
-            HttpListenerResponse response = context.Response;
+            HttpListenerContext  context = listener.GetContext();
+            HttpListenerRequest  req     = context.Request;
+            HttpListenerResponse res     = context.Response;
 
-            if (request.HttpMethod == "POST" && request.Url.AbsolutePath == "/receive-json")
+            string nn = req.QueryString["number"];
+            string dt = req.QueryString["date"];
+
+            Console.WriteLine(nn);
+            Console.WriteLine(dt);
+
+            if (req.HttpMethod == "GET")
             {
-                // Handle POST requests as before
-                using (Stream body = request.InputStream)
-                {
-                    Encoding encoding = request.ContentEncoding;
-                    StreamReader reader = new StreamReader(body, encoding);
-                    string json = reader.ReadToEnd();
 
-                    // Save the received JSON data to a file
-                    File.WriteAllText("received.json", json);
+                string pp = (req.Url.AbsolutePath == "/") ? "index.html" : req.Url.AbsolutePath.Remove(0, 1);
+                string ff = Path.Combine(Directory.GetCurrentDirectory(), pp);
+
+                if (File.Exists(ff)) { 
+
+                    string ht = File.ReadAllText(ff);
+                    byte[] bu = Encoding.UTF8.GetBytes(ht);
+                    res.ContentLength64 = bu.Length;
+
+                    string ex = Path.GetExtension(pp);
+                    res.ContentType = Program.contentTypes[ex] as string;
+                    res.OutputStream.Write(bu, 0, bu.Length);
+                    res.Close();
+                    continue;
+
+                }
+            }
+
+						if (req.HttpMethod == "GET" && req.Url.AbsolutePath == "/restore")
+            {
+                try { 
+
+                    string di = Path.Combine(Directory.GetCurrentDirectory(), "rec", nn); 
+                    //Console.WriteLine("GET /resume");
+                    Console.WriteLine("dir:");
+                    Console.WriteLine(di);
+                    string pa = Path.Combine(di, dt + ".json");
+                    Console.WriteLine(pa);
+
+                        string x = String.Format("{0}_*.json", dt);
+                    Console.WriteLine("pattern:");
+                        Console.WriteLine(x);
+                    string[] files = Directory.GetFiles(di, x);
+                    Console.WriteLine(files.Length);
+
+                    if (files.Length > 0) {
+
+                        Array.Sort(files, (x1, y1) => y1.CompareTo(x1));
+
+                        pa = files[0];
+                        Console.WriteLine(pa);
+    
+                        if (File.Exists(files[0])) {
+        
+                            string rd = File.ReadAllText(pa);
+                            byte[] bu = Encoding.UTF8.GetBytes(rd);
+            
+                            res.ContentType = "application/json";
+                            res.ContentLength64 = bu.Length;
+                            res.OutputStream.Write(bu, 0, bu.Length);
+                            res.Close();
+                            continue;
+                        }
+                    }
+                } catch(Exception e) {
+                    Console.WriteLine(e);
+                    byte[] bb = Encoding.UTF8.GetBytes("Saving into the file has failed.");
+                    res.ContentLength64 = bb.Length;
+                    res.OutputStream.Write(bb, 0, bb.Length);
+                    res.Close();
+                    continue;
                 }
 
-                byte[] responseBytes = Encoding.UTF8.GetBytes("JSON data received and saved.");
-                response.ContentLength64 = responseBytes.Length;
-                response.OutputStream.Write(responseBytes, 0, responseBytes.Length);
-                response.Close();
             }
-            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/")
+
+            Console.WriteLine("22");
+            Console.WriteLine(req.Url.AbsolutePath);
+
+            if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/save")
             {
-                // Serve a sample HTML file for GET requests to the root path
-                string html = File.ReadAllText("index.html");
 
-                byte[] buffer = Encoding.UTF8.GetBytes(html);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.OutputStream.Write(buffer, 0, buffer.Length);
-                response.Close();
-            }
-            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/index2.html")
-            {
-                // Serve a sample HTML file for GET requests to the root path
-                string html = File.ReadAllText("index2.html");
+                Console.WriteLine("nn:");
+                Console.WriteLine(nn);
+                Console.WriteLine("POST save");
 
-                byte[] buffer = Encoding.UTF8.GetBytes(html);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.OutputStream.Write(buffer, 0, buffer.Length);
-                response.Close();
-            }
+                byte[] bb;
 
-            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/script.js")
-            {
-                // Serve a sample HTML file for GET requests to the root path
-                string html = File.ReadAllText("script.js");
+                try {
 
-                byte[] buffer = Encoding.UTF8.GetBytes(html);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.OutputStream.Write(buffer, 0, buffer.Length);
-                response.Close();
-            }
-            else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/datax")
-            {
-                // Handle GET requests at /data and respond with JSON data
-                string jsonData = "{\"message\": \"Hello from the server!\"}";
-                byte[] buffer = Encoding.UTF8.GetBytes(jsonData);
+                    using (Stream body = req.InputStream) {
 
-                response.ContentType = "application/json";
-                response.ContentLength64 = buffer.Length;
-                response.OutputStream.Write(buffer, 0, buffer.Length);
-                response.Close();
-            }
-						else if (request.HttpMethod == "GET" && request.Url.AbsolutePath == "/data")
-            {
-                // Handle GET requests at /data and respond with JSON data from the "retrieved.json" file
-                string jsonData = File.ReadAllText("received.json");
-                Console.WriteLine("jsonData:");
-                Console.WriteLine(jsonData);
-                byte[] buffer = Encoding.UTF8.GetBytes(jsonData);
+                        StreamReader reader = new StreamReader(body, req.ContentEncoding);
+                        string jso = reader.ReadToEnd();
+                        Console.WriteLine(jso);
+   
+                        string di = Path.Combine(Directory.GetCurrentDirectory(), "rec", nn); 
 
+                        if (!Directory.Exists(di))
+                            Directory.CreateDirectory(di);
 
-                response.ContentType = "application/json";
-                response.ContentLength64 = buffer.Length;
-                response.OutputStream.Write(buffer, 0, buffer.Length);
-                response.Close();
+                        string nm = String.Format("{0}_{1}.json", dt, DateTime.Now.ToString("yyyyMMddHHmmss"));
+
+                        string pa = Path.Combine(di, nm);
+                        Console.WriteLine(pa);
+                        File.WriteAllText(pa, jso);
+    
+                    }
+    
+                    bb = Encoding.UTF8.GetBytes("JSON data received and saved.");
+
+                } catch(Exception e) {
+                    Console.WriteLine(e);
+                    bb = Encoding.UTF8.GetBytes("Savng into the file has failed.");
+                }
+
+                res.ContentLength64 = bb.Length;
+                res.OutputStream.Write(bb, 0, bb.Length);
+                res.Close();
+                continue;
+
             }
 
-            else
-            {
-                // Handle other requests or return a 404 Not Found response
-                response.StatusCode = (int)HttpStatusCode.NotFound;
-                response.Close();
-            }
+            res.StatusCode = (int)HttpStatusCode.NotFound;
+            res.Close();
         }
+    }
+
+    static string Filename(string number, string date_string) {
+      return Path.Combine(number, date_string);
     }
 }
