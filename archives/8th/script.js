@@ -78,12 +78,18 @@ $(document).ready((event) => {
     $("#date").val(datestring());
   });
 
-  function datestring() {
-    const date = new Date();
-    const str =  new Intl.DateTimeFormat('en-US',
-     { month: '2-digit', day: '2-digit', year: 'numeric'}).format(date).replaceAll('/', '');
-    return str;
-  }
+  $("input:text, textarea").each(function() {
+    const id = $(this).attr("id");
+    $(this).attr("name", id);
+  });
+
+
 
 });
 
+function datestring() {
+  const date = new Date();
+  const str =  new Intl.DateTimeFormat('en-US',
+   { month: '2-digit', day: '2-digit', year: 'numeric'}).format(date).replaceAll('/', '');
+  return str;
+}
