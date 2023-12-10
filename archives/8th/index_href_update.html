@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" >
+    <title>CheckList</title>
+  </head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@9.1.0/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true});</script>
+  <script src="script.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <body>
+    <div>
+      <h2>command:</h2>
+      <div>
+	      <input id="managedNumber" placeholder="Managed Number" />
+        <input id="date"          placeholder="Date String" /><button id="set_today2" >Today</button>
+        <button id="save">Save</button>
+        <button id="restore">Restore</button>
+      </div>
+
+    </div>
+    <div>
+      <form action="/" id="for_editing" method="POST" >
+      <input type="submit" x_name="save" id="save_me" value="submit" />
+        <div>
+          <input id="timestamp" x_name="timestamp" />
+          <button id="set_today" >Today</button>
+        </div>
+        <div class="item">
+          <input id="prevent_mis" type=checkbox checked />Prevent closing
+        </div>
+        <div class="item">
+          <H2</H2>
+          <div class="basic_info">
+            <input class="path" type="text" id="kint_p">
+
+				    <p>
+
+			      <label for="itemLink">Item Link:</label>
+            <input type="text" id="itemLink" name="itemLink" oninput="document.getElementById('itemAnchor').href=this.value;">
+            <a href="" target="_empty" id="itemAnchor">Go to Item</a><br>
+</p>
+
+          </div>
+<div>
+<p>
+			      <label for="result">restore data:</label>
+<textarea id="result"></textarea>
+</p>
+</div>
+
+
+
+      </form>
+    </div>
+
+  </body>
+</html>
+

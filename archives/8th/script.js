@@ -58,8 +58,14 @@ $(document).ready((event) => {
       var edata = JSON.parse(data);
       $.each(edata, function(kk, vv) {
         console.log(kk);
-        console.log(vv);
-        $('#' + kk).val(vv);
+        console.log(vv.toString());
+        try {
+        $('#' + kk).val(vv.toString());
+        } catch(err2) {
+          console.err('Err:');
+          console.err(err2);
+
+        };
       });
 
     })
@@ -82,6 +88,17 @@ $(document).ready((event) => {
     const id = $(this).attr("id");
     $(this).attr("name", id);
   });
+
+  $("#btn_mkdir").on("click", function(ee) {
+    alert("test");
+    alert($("#ass_p").val());
+    $("#mkdir").val( $("#ass_p").val());
+
+  });
+
+
+
+  console.log("END");
 
 
 
